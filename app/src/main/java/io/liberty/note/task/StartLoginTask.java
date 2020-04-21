@@ -56,7 +56,7 @@ public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLogi
             startLoginResponse.interactionId = startRealmLoginResponse.interactionId;
             return startLoginResponse;
         } catch (IOException e) {
-            Log.e("CRYPTIUM", "StartLoginResponse doInBackground Error: ", e);
+            Log.e("CRYPTIUM", "StartLoginResponse doInBackground Error: " + e);
             return null;
         }
     }
@@ -70,8 +70,8 @@ public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLogi
 
     public StartRealmLoginResponse startRealmLogin(StartRealmLoginRequest startRealmLoginRequest) throws IOException {
         String jsonString = mapper.writeValueAsString(startRealmLoginRequest);
-        Log.d("CRYPTIUM", String.format("startRealmLogin jsonString: %s", jsonString));
         String realmStartLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_START_LOGIN_PATH;
+        Log.d("CRYPTPIUM", "startRealmLogin realmStartLoginUrl: " + realmStartLoginUrl);
         HttpPost httpPostRequest = mApp.createHttpPostWithString(realmStartLoginUrl, jsonString, mApp.getEndpointConfiguration().CONTENT_TYPE);
         String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, mApp.getEndpointConfiguration().CONTENT_TYPE);
         StartRealmLoginResponse startRealmLoginResponse = mapper.readValue(httpPostResult, StartRealmLoginResponse.class);
