@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Liberty Note Developer</string>
+    <string name="service_endpoint_host">libertynote.x7.cryptium.tech</string>
+    <string name="service_endpoint_url">https://libertynote.x7.cryptium.tech</string>
+    <string name="loginshield_endpoint_url">https://tigercomet.x7.cryptium.tech</string>
+    <string name="loginshield_package_name">tech.cryptium.tigercomet.loginshield.dev</string>
+</resources>

@@ -5,4 +5,11 @@
     <string name="previous">Previous</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="email_required">Email Required</string>
+    <string name="create_first_note">Create your first Note!</string>
+    <string name="note_deleted">Note deleted</string>
+    <string name="enter_valid_username">Enter a valid username</string>
+    <string name="login_failed">Login failed</string>
+    <string name="note_created">Note created</string>
+    <string name="error_creating_note">Error creating note</string>
+    <string name="error_deleting_note">Error deleting note</string>
 </resources>

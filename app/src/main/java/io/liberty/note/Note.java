@@ -1,30 +1,23 @@
 package io.liberty.note;
 
 public class Note {
-    public String title;
-    public String body;
+    public Info info;
+    public String content;
+    public String id;
 
-    public Note(String title, String body) {
-        this.title = title;
-        this.body = body;
-    }
+//    public Note(Info info, String content, String id) {
+//        this.info = info;
+//        this.content = content;
+//        this.id = id;
+//    }
 
-    public Note() {
-    }
+    public static class Info{
+        public String title;
+        public String author;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
+//        public Info(String title, String author) {
+//            this.title = title;
+//            this.author = author;
+//        }
     }
 }

@@ -1,19 +1,15 @@
 package io.liberty.note;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
-    private ArrayList<Note> notes;
+    private NoteList noteList;
 
     // Provide a reference to the views for each data item
     public static class NoteViewHolder extends RecyclerView.ViewHolder {
@@ -29,8 +25,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         }
     }
 
-    public NoteAdapter(ArrayList<Note> incomingNotes) {
-        notes = incomingNotes;
+    public NoteAdapter(NoteList incomingNoteList) {
+        noteList = incomingNoteList;
     }
 
     @Override
@@ -49,14 +45,17 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(NoteViewHolder noteViewHolder, int i) {
-        noteViewHolder.cardViewNote.setElevation(8);
-        noteViewHolder.textViewCardTitle.setText(notes.get(i).title);
-        noteViewHolder.textViewCardBody.setText(notes.get(i).body);
+        noteViewHolder.textViewCardTitle.setText(noteList.list.get(i).info.title);
+        noteViewHolder.textViewCardBody.setText(noteList.list.get(i).content);
     }
 
-    // Return the size of notes
+    // Return the size of noteList
     @Override
     public int getItemCount() {
-        return notes.size();
+        if (noteList != null && noteList.list != null) {
+            return noteList.list.size();
+        } else {
+            return 0;
+        }
     }
 }

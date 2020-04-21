@@ -6,26 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".CreateAccountActivity">
 
-    <Button
-        android:id="@+id/buttonCreateAccount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/purple"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:text="Create Account"
-        app:layout_constraintEnd_toStartOf="@+id/guideline13"
-        app:layout_constraintStart_toStartOf="@+id/guideline12"
-        app:layout_constraintTop_toBottomOf="@+id/textLayoutEmail" />
-
     <ImageView
         android:id="@+id/imageViewBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:tint="@color/purple"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:focusable="true"
+        android:clickable="true"
         app:layout_constraintStart_toStartOf="@+id/guideline12"
         app:layout_constraintTop_toTopOf="@+id/guideline11"
-        app:srcCompat="?attr/actionModeCloseDrawable" />
+        app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
     <TextView
         android:id="@+id/textViewCreateAccountTitle"
@@ -33,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Create Account"
+        android:textColor="@color/purple"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
         app:layout_constraintStart_toStartOf="@+id/guideline12"
@@ -45,12 +37,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:hint="Name"
+        app:boxStrokeColor="@color/blue"
         app:errorEnabled="true"
+        app:hintTextColor="@color/blue"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline12"
         app:layout_constraintTop_toBottomOf="@+id/textViewCreateAccountTitle"
-        app:startIconDrawable="@android:drawable/sym_action_email">
+        app:startIconDrawable="@drawable/ic_person_black_24dp"
+        app:startIconTint="@color/blue">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textEditName"
@@ -69,12 +64,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="Email Address"
+        app:boxStrokeColor="@color/blue"
         app:errorEnabled="true"
+        app:hintTextColor="@color/blue"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline12"
         app:layout_constraintTop_toBottomOf="@+id/textLayoutName"
-        app:startIconDrawable="@android:drawable/sym_action_email">
+        app:startIconDrawable="@android:drawable/sym_action_email"
+        app:startIconTint="@color/blue">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textEditEmail"
@@ -85,6 +83,33 @@
             android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/checkboxAgree"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-light"
+        app:buttonTint="@color/blue"
+        app:layout_constraintEnd_toStartOf="@+id/guideline13"
+        app:layout_constraintStart_toStartOf="@+id/guideline12"
+        app:layout_constraintTop_toBottomOf="@+id/textLayoutEmail">
+
+    </com.google.android.material.checkbox.MaterialCheckBox>
+
+    <Button
+        android:id="@+id/buttonCreateAccount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/blue"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="Create Account"
+        app:layout_constraintEnd_toStartOf="@+id/guideline13"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline12"
+        app:layout_constraintTop_toBottomOf="@+id/checkboxAgree" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline11"

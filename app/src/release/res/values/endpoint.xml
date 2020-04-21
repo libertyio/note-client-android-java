@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Liberty Note</string>
+    <string name="service_endpoint_host">liberty.io</string>
+    <string name="service_endpoint_url">https://liberty.io</string>
+    <string name="loginshield_endpoint_url">https://loginshield.com</string>
+    <string name="loginshield_package_name">tech.cryptium.tigercomet.loginshield</string>
+</resources>
