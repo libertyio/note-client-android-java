@@ -303,6 +303,7 @@ public class LoginActivity extends AppCompatActivity {
         v = snackbar.getView();
         CoordinatorLayout.LayoutParams params=(CoordinatorLayout.LayoutParams)v.getLayoutParams();
         params.gravity = Gravity.TOP;
+        params.gravity = Gravity.CENTER_HORIZONTAL;
         v.setLayoutParams(params);
         snackbar.show();
     }

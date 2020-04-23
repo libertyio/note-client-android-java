@@ -18,7 +18,7 @@
             android:fontFamily="sans-serif-smallcaps"
             android:gravity="center"
             android:letterSpacing="0.25"
-            android:text="Liberty Note"
+            android:text="@string/liberty_note"
             android:textColor="@color/purple"
             android:textSize="32sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,12 +50,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:hint="Email Address"
             app:boxStrokeColor="@color/purple"
             app:errorEnabled="true"
             app:hintTextColor="@color/purple"
-            app:layout_constraintBottom_toTopOf="@+id/buttonLogin"
+            app:layout_constraintBottom_toTopOf="@+id/guideline14"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -76,13 +75,14 @@
             android:id="@+id/buttonLogin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="36dp"
+            android:layout_marginBottom="16dp"
             android:backgroundTint="@color/purple"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Login"
+            android:text="@string/login"
             app:layout_constraintBottom_toTopOf="@+id/buttonCreateAccount"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline3" />
 
         <Button
@@ -90,7 +90,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/blue"
-            android:text="Create Account"
+            android:text="@string/create_account"
             app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toStartOf="@+id/guideline4"
             app:layout_constraintStart_toStartOf="@+id/guideline3" />
@@ -122,6 +122,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent=".90" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".65" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
