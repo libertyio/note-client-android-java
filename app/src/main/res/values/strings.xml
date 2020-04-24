@@ -1,12 +1,24 @@
 <resources>
     <string name="app_name">Liberty Note</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="email_required">Email Required</string>
+    <string name="create_first_note">Create your first Note!</string>
+    <string name="note_deleted">Note deleted</string>
+    <string name="enter_valid_username">Enter a valid username</string>
+    <string name="login_failed">Login failed</string>
+    <string name="note_created">Note created</string>
+    <string name="error_creating_note">Error creating note</string>
+    <string name="error_deleting_note">Error deleting note</string>
+    <string name="liberty_note">Liberty Note</string>
+    <string name="login">Login</string>
+    <string name="create_account">Create Account</string>
+    <string name="name">Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="title">Title</string>
+    <string name="write_your_note_here">Write your note here…</string>
+    <string name="untitled">Untitled</string>
+    <string name="write_your_first_note">Write your first note!</string>
 </resources>
