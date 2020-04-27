@@ -3,8 +3,10 @@ package io.liberty.note;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -51,9 +53,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
         checkboxAgree = findViewById(R.id.checkboxAgree);
 
-        String checkBoxText = "I agree to the <a href='https://liberty.io/about/terms'>Terms of Use</a> and <a href='https://liberty.io/about/privacy'>Privacy Policy</a>";
-        checkboxAgree.setText(Html.fromHtml(checkBoxText));
-        checkboxAgree.setLinkTextColor(getResources().getColor(R.color.blue));
+        String checkBoxText = String.format("I agree to the <a href='%s/about/terms'>Terms of Use</a> and <a href='%s/about/privacy'>Privacy Policy</a>", getString(R.string.service_endpoint_url), getString(R.string.service_endpoint_url));
+        checkboxAgree.setText(fromHtml(checkBoxText));
+        checkboxAgree.setLinkTextColor(getColor(R.color.blue));
         checkboxAgree.setMovementMethod(LinkMovementMethod.getInstance());
 
         createAccountIntent = getIntent();
@@ -84,6 +86,15 @@ public class CreateAccountActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Spanned fromHtml(String source) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(source);
+        }
     }
 
 //    public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) throws IOException {
