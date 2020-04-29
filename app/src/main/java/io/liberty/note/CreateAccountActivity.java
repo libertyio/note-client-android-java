@@ -79,8 +79,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         buttonCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Login with Loginshield and create account in database
-//                createAccount();
                 Intent loginIntent = new Intent(CreateAccountActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
                 finish();
@@ -96,25 +94,6 @@ public class CreateAccountActivity extends AppCompatActivity {
             return Html.fromHtml(source);
         }
     }
-
-//    public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) throws IOException {
-//        String jsonString = mApp.mapper.writeValueAsString(createAccountRequest);
-//        Log.d("CRYPTIUM", "createAccount jsonString: " + jsonString);
-//        URI uri;
-//        try {
-//            URIBuilder uribuilder = new URIBuilder(LibertyNote.HOST_URI);
-//            uribuilder.setPath(LibertyNote.CREATE_ACCOUNT_PATH);
-//            uri = uribuilder.build();
-//        } catch (URISyntaxException e) {
-//            throw new IOException(e);
-//        }
-//        HttpPost httpPostRequest = mApp.createHttpPostWithString(uri.toString(), jsonString, LibertyNote.CONTENT_TYPE);
-//        HttpAgent httpAgent = new HttpAgent(mApp.httpClient, mApp.httpClientContext);
-//        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, LibertyNote.CONTENT_TYPE);
-//        CreateAccountResponse createAccountResponse = mApp.mapper.readValue(httpPostResult, createAccountResponse.class);
-//        Log.d("CRYPTIUM", "createAccount response: " + createAccountResponse.isCreated);
-//        return createAccountResponse;
-//    }
 
     @Override
     public void onBackPressed() {

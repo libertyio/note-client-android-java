@@ -76,9 +76,6 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startLoginshieldActivity(LOGINSHIELD_PACKAGE_NAME, "https://tigercomet.x7.cryptium.tech/login/android#mx=123&key=321");
-//                startLoginshieldActivity(LOGINSHIELD_PACKAGE_NAME, "login://tigercomet.x7.cryptium.tech/#mx=123&key=321");
-
                 try {
                     login();
                 } catch (IOException e) {
@@ -94,13 +91,6 @@ public class LoginActivity extends AppCompatActivity {
                 String websiteCreateAccountUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().WEBSITE_CREATE_ACCOUNT_PATH;
                 intent.setData(Uri.parse(websiteCreateAccountUrl));
                 startActivity(intent);
-                // TODO: enable create account functionality in-app, so user doesn't have to have another device and can do everything on their phone with 2 apps (LibertyNote and LoginShield)
-//                Intent createAccountIntent = new Intent(LoginActivity.this, CreateAccountActivity.class);
-//                if (textEditEmail.getText() != null) {
-//                    createAccountIntent.putExtra("email", textEditEmail.getText().toString());
-//                }
-//                startActivity(createAccountIntent);
-//                finish();
             }
         });
     }
@@ -129,8 +119,6 @@ public class LoginActivity extends AppCompatActivity {
                 String username = textEditEmail.getText().toString();
                 StartLoginRequest startLoginRequest = new StartLoginRequest();
                 startLoginRequest.username = username;
-//                Logger log = LoggerFactory.getLogger(LoginActivity.class);
-//                log.info("logback before startLoginTAsk");
                 startLoginTask(startLoginRequest);
             } else {
                 View v = findViewById(android.R.id.content);
@@ -160,12 +148,11 @@ public class LoginActivity extends AppCompatActivity {
         startLoginTask.execute(startLoginRequest);
     }
 
-    // Use this to launch another app: startLoginshieldActivity(getApplicationContext(), "tech.cryptium.tigercomet.loginshield");
+    // launch the LoginShield app for login to the Liberty.io service
     public void startLoginshieldActivity(String packageName, String dataUrl) {
         Log.d("CRYPTIUM", "startLoginshieldActivity");
         // Build the intent
         Uri loginshieldUrl = Uri.parse(dataUrl);
-//        Intent loginshieldIntent = new Intent(Intent.ACTION_VIEW, loginshieldUrl);
         Intent loginshieldIntent = new Intent("tech.cryptium.tigercomet.intent.action.LOGIN", loginshieldUrl);
 
         // Verify it resolves
@@ -210,6 +197,8 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         // TODO: login failed
                         Log.d("CRYPTIUM", "onLoginShieldResultOk: login failed");
+                        View v = findViewById(android.R.id.content);
+                        showSnackbar(v, getResources().getString(R.string.login_failed));
                     }
                 } else {
                     View v = findViewById(android.R.id.content);
