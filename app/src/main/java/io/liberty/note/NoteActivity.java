@@ -10,22 +10,25 @@ import android.view.View;
 import android.widget.ImageView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import io.liberty.note.protocol.CreateNoteRequest;
+import io.liberty.note.protocol.CreateNoteResponse;
+import io.liberty.note.protocol.DeleteNoteRequest;
+import io.liberty.note.protocol.DeleteNoteResponse;
+import io.liberty.note.protocol.EditNoteRequest;
+import io.liberty.note.protocol.EditNoteResponse;
 import io.liberty.note.task.CreateNoteTask;
 import io.liberty.note.task.DeleteNoteTask;
 import io.liberty.note.task.EditNoteTask;
 
 public class NoteActivity extends AppCompatActivity {
 
-    Intent noteIntent;
-    ImageView imageViewBack;
-    ImageView imageViewDelete;
-    String id;
-    String title;
-    String body;
-    TextInputEditText textEditTitle;
-    TextInputEditText textEditBody;
-    LibertyNote mApp;
-    boolean isNewNote;
+    private String id;
+    private String title;
+    private String body;
+    private TextInputEditText textEditTitle;
+    private TextInputEditText textEditBody;
+    private LibertyNote mApp;
+    private boolean isNewNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +37,12 @@ public class NoteActivity extends AppCompatActivity {
 
         mApp = (LibertyNote) getApplication();
 
-        imageViewBack = findViewById(R.id.imageViewBack);
-        imageViewDelete = findViewById(R.id.imageViewDelete);
+        ImageView imageViewBack = findViewById(R.id.imageViewBack);
+        ImageView imageViewDelete = findViewById(R.id.imageViewDelete);
         textEditTitle = findViewById(R.id.textEditTitle);
         textEditBody = findViewById(R.id.textEditBody);
 
-        noteIntent = getIntent();
+        Intent noteIntent = getIntent();
         id = noteIntent.getStringExtra("id");
         title = noteIntent.getStringExtra("title");
         body = noteIntent.getStringExtra("body");
@@ -129,7 +132,7 @@ public class NoteActivity extends AppCompatActivity {
         final EditNoteTask.EditNoteTaskResultListener callback = new EditNoteTask.EditNoteTaskResultListener() {
             @Override
             public void onEditNoteTaskResult(EditNoteResponse editNoteResponse) {
-                Log.d("CRYPTIUM", "EditNoteTask finished, isEdited: " + editNoteResponse.isEdited);
+                Log.d("LIBERTY.IO", "EditNoteTask finished, isEdited: " + editNoteResponse.isEdited);
 //                if (editNoteResponse.isEdited) {
 //
 //                } else {
@@ -137,7 +140,7 @@ public class NoteActivity extends AppCompatActivity {
 //                }
             }
         };
-        Log.d("CRYPTIUM", "editNoteTask executed");
+        Log.d("LIBERTY.IO", "editNoteTask executed");
         EditNoteTask editNoteTask = new EditNoteTask(callback, mApp, editNoteRequest);
         editNoteTask.execute(editNoteRequest);
     }
@@ -147,17 +150,17 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public void onCreateNoteTaskResult(CreateNoteResponse createNoteResponse) {
                 // Show snackbar with positive/negative result.
-                Log.d("CRYPTIUM", "CreateNoteTask finished, isCreated: " + createNoteResponse.isCreated);
+                Log.d("LIBERTY.IO", "CreateNoteTask finished, isCreated: " + createNoteResponse.isCreated);
                 if (createNoteResponse.isCreated) {
                     View v = findViewById(android.R.id.content);
-                    showSnackbar(v, getResources().getString(R.string.note_created));
+                    showSnackbar(v, getString(R.string.note_created));
                 } else {
                     View v = findViewById(android.R.id.content);
-                    showSnackbar(v, getResources().getString(R.string.error_creating_note));
+                    showSnackbar(v, getString(R.string.error_creating_note));
                 }
             }
         };
-        Log.d("CRYPTIUM", "createNoteTask executed");
+        Log.d("LIBERTY.IO", "createNoteTask executed");
         CreateNoteTask createNoteTask = new CreateNoteTask(callback, mApp, createNoteRequest);
         createNoteTask.execute(createNoteRequest);
     }
@@ -166,7 +169,7 @@ public class NoteActivity extends AppCompatActivity {
         final DeleteNoteTask.DeleteNoteTaskResultListener callback = new DeleteNoteTask.DeleteNoteTaskResultListener() {
             @Override
             public void onDeleteNoteTaskResult(DeleteNoteResponse deleteNoteResponse) {
-                Log.d("CRYPTIUM", "DeleteNoteTask finished, isDeleted: " + deleteNoteResponse.isDeleted);
+                Log.d("LIBERTY.IO", "DeleteNoteTask finished, isDeleted: " + deleteNoteResponse.isDeleted);
                 // If result is positive, return to home. If negative, show snackbar
                 if (deleteNoteResponse.isDeleted) {
 
@@ -177,11 +180,11 @@ public class NoteActivity extends AppCompatActivity {
                     finish();
                 } else {
                     View v = findViewById(android.R.id.content);
-                    showSnackbar(v, getResources().getString(R.string.error_deleting_note));
+                    showSnackbar(v, getString(R.string.error_deleting_note));
                 }
             }
         };
-        Log.d("CRYPTIUM", "DeleteNoteTask executed, id:" + deleteNoteRequest.id);
+        Log.d("LIBERTY.IO", "DeleteNoteTask executed, id:" + deleteNoteRequest.id);
         DeleteNoteTask deleteNoteTask = new DeleteNoteTask(callback, mApp, deleteNoteRequest);
         deleteNoteTask.execute(deleteNoteRequest);
     }

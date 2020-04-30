@@ -21,4 +21,10 @@
     <string name="write_your_note_here">Write your note here…</string>
     <string name="untitled">Untitled</string>
     <string name="write_your_first_note">Write your first note!</string>
+    <string name="try_again">Try again</string>
+    <string name="account_created">Account created</string>
+    <string name="error_creating_account">Error creating account</string>
+    <string name="name_empty">Enter your name</string>
+    <string name="email_empty">Enter your email</string>
+    <string name="terms_unchecked">Agree to terms of service</string>
 </resources>

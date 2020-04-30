@@ -1,32 +1,24 @@
 package io.liberty.note.task;
 
 import android.os.AsyncTask;
-import android.text.Editable;
 import android.util.Log;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loginshield.sdk.realm.login.gateway.GatewayClient;
 import com.loginshield.sdk.realm.login.gateway.protocol.StartRealmLoginRequest;
 import com.loginshield.sdk.realm.login.gateway.protocol.StartRealmLoginResponse;
-
 import org.underlake.sdk.http.HttpAgent;
-
 import java.io.IOException;
 import io.liberty.note.LibertyNote;
-import io.liberty.note.StartLoginRequest;
-import io.liberty.note.StartLoginResponse;
+import io.liberty.note.protocol.StartLoginRequest;
+import io.liberty.note.protocol.StartLoginResponse;
 import my.apache.http.client.methods.HttpPost;
-import my.apache.http.client.protocol.HttpClientContext;
-import my.apache.http.impl.client.BasicCookieStore;
-import my.apache.http.impl.client.CloseableHttpClient;
-import my.apache.http.impl.client.HttpClients;
 
 public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLoginResponse> {
     private StartLoginTaskResultListener listener;
     private LibertyNote mApp;
-    GatewayClient gatewayClient;
+    private GatewayClient gatewayClient;
     private ObjectMapper mapper = new ObjectMapper();
-    HttpAgent httpAgent;
+    private HttpAgent httpAgent;
 
     public StartLoginTask(StartLoginTask.StartLoginTaskResultListener listener, LibertyNote mApp, GatewayClient gatewayClient, HttpAgent httpAgent) {
         this.listener = listener;
@@ -45,7 +37,7 @@ public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLogi
     }
 
     protected StartLoginResponse doInBackground(StartLoginRequest... params) {
-        Log.d("CRYPTIUM", "StartLoginTask doInBackground... params[0]: " + params[0].username);
+        Log.d("LIBERTY.IO", "StartLoginTask doInBackground... params[0]: " + params[0].username);
         try {
             StartRealmLoginRequest startRealmLoginRequest = new StartRealmLoginRequest();
             startRealmLoginRequest.username = params[0].username;
@@ -56,7 +48,7 @@ public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLogi
             startLoginResponse.interactionId = startRealmLoginResponse.interactionId;
             return startLoginResponse;
         } catch (IOException e) {
-            Log.e("CRYPTIUM", "StartLoginResponse doInBackground Error: " + e);
+            Log.e("LIBERTY.IO", "StartLoginResponse doInBackground Error: " + e);
             return null;
         }
     }
@@ -72,10 +64,10 @@ public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLogi
         String jsonString = mapper.writeValueAsString(startRealmLoginRequest);
         String realmStartLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_START_LOGIN_PATH;
         Log.d("CRYPTPIUM", "startRealmLogin realmStartLoginUrl: " + realmStartLoginUrl);
-        HttpPost httpPostRequest = mApp.createHttpPostWithString(realmStartLoginUrl, jsonString, mApp.getEndpointConfiguration().CONTENT_TYPE);
-        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, mApp.getEndpointConfiguration().CONTENT_TYPE);
+        HttpPost httpPostRequest = mApp.createHttpPostWithString(realmStartLoginUrl, jsonString, mApp.getEndpointConfiguration().APPLICATION_JSON);
+        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, mApp.getEndpointConfiguration().APPLICATION_JSON);
         StartRealmLoginResponse startRealmLoginResponse = mapper.readValue(httpPostResult, StartRealmLoginResponse.class);
-        Log.d("CRYPTIUM", String.format("startRealmLogin response isAuthenticated %s forward url %s interactionId %s", startRealmLoginResponse.isAuthenticated, startRealmLoginResponse.forward, startRealmLoginResponse.interactionId));
+        Log.d("LIBERTY.IO", String.format("startRealmLogin response isAuthenticated %s forward url %s interactionId %s", startRealmLoginResponse.isAuthenticated, startRealmLoginResponse.forward, startRealmLoginResponse.interactionId));
         return startRealmLoginResponse;
     }
 }

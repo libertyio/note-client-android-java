@@ -2,7 +2,7 @@ package io.liberty.note;
 
 public class EndpointConfiguration {
 
-    final public String CONTENT_TYPE = "application/json";
+    final public String APPLICATION_JSON = "application/json";
     final public String GET_LIST_PATH = "/service/note/list";
     final public String LOGIN_PATH = "/service/session/login";
     final public String CREATE_PATH = "/service/note/create";

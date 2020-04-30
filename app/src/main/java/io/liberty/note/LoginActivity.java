@@ -10,8 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -20,14 +18,13 @@ import android.widget.ProgressBar;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.loginshield.sdk.realm.login.gateway.GatewayClient;
 import com.loginshield.sdk.realm.login.gateway.protocol.VerifyRealmLoginResponse;
 import java.io.IOException;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.underlake.sdk.http.HttpAgent;
+import io.liberty.note.protocol.StartLoginRequest;
+import io.liberty.note.protocol.StartLoginResponse;
 import io.liberty.note.task.StartLoginTask;
 import io.liberty.note.task.VerifyLoginTask;
 import my.apache.http.client.config.CookieSpecs;
@@ -39,21 +36,18 @@ import my.apache.http.impl.client.HttpClients;
 
 public class LoginActivity extends AppCompatActivity {
 
-    TextInputLayout textLayoutEmail;
-    TextInputEditText textEditEmail;
-    Button buttonLogin;
-    Button buttonCreateAccount;
-    LibertyNote mApp;
-    GatewayClient gatewayClient;
-    boolean isOpeningAppStore = false;
-    String loginDataUri;
-    ProgressBar progressBar;
+    private TextInputEditText textEditEmail;
+    private LibertyNote mApp;
+    private GatewayClient gatewayClient;
+    private boolean isOpenedAppStore = false;
+    private String loginDataUri;
+    private ProgressBar progressBar;
     private ObjectMapper mapper = new ObjectMapper();
-    HttpAgent serviceHttpAgent;
-    ClientTokenHelper clientTokenHelper;
+    private HttpAgent serviceHttpAgent;
+    private ClientTokenHelper clientTokenHelper;
+    private String loginInteractionId;
     final private static int LOGIN_REQUEST_CODE = 1;
     final private static int MARKET_REQUEST_CODE = 2;
-    String loginInteractionId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         mApp = (LibertyNote) getApplication();
 
         progressBar = findViewById(R.id.progressBar);
-        buttonLogin = findViewById(R.id.buttonLogin);
-        buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
-        textLayoutEmail = findViewById(R.id.textLayoutEmail);
+        Button buttonLogin = findViewById(R.id.buttonLogin);
+        Button buttonCreateAccount = findViewById(R.id.buttonCreateAccount);
         textEditEmail = findViewById(R.id.textEditEmail);
 
         progressBar.setVisibility(View.INVISIBLE);
@@ -87,10 +80,20 @@ public class LoginActivity extends AppCompatActivity {
         buttonCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                String websiteCreateAccountUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().WEBSITE_CREATE_ACCOUNT_PATH;
-                intent.setData(Uri.parse(websiteCreateAccountUrl));
-                startActivity(intent);
+                // Take user to create account on website
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                String websiteCreateAccountUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().WEBSITE_CREATE_ACCOUNT_PATH;
+//                intent.setData(Uri.parse(websiteCreateAccountUrl));
+//                startActivity(intent);
+
+                // TODO: enable create account functionality in-app, so user doesn't have to have another device and can do everything on their phone with 2 apps (LibertyNote and LoginShield)
+                Intent createAccountIntent = new Intent(LoginActivity.this, CreateAccountActivity.class);
+                if (textEditEmail.getText() != null) {
+                    createAccountIntent.putExtra("email",
+                    textEditEmail.getText().toString());
+                }
+                startActivity(createAccountIntent);
+                finish();
             }
         });
     }
@@ -122,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                 startLoginTask(startLoginRequest);
             } else {
                 View v = findViewById(android.R.id.content);
-                showSnackbar(v, getResources().getString(R.string.enter_valid_username));
+                showSnackbar(v, getString(R.string.enter_valid_username));
                 progressBar.setVisibility(View.INVISIBLE);
             }
         }
@@ -134,23 +137,23 @@ public class LoginActivity extends AppCompatActivity {
             public void onStartLoginTaskResult(StartLoginResponse startLoginResponse) {
                 progressBar.setVisibility(View.INVISIBLE);
                 if (startLoginResponse != null) {
-                    Log.d("CRYPTIUM", String.format("StartLoginResponse finished, appLinkUrl: %s interactionId: %s", startLoginResponse.appLinkUrl, startLoginResponse.interactionId));
+                    Log.d("LIBERTY.IO", String.format("StartLoginResponse finished, appLinkUrl: %s interactionId: %s", startLoginResponse.appLinkUrl, startLoginResponse.interactionId));
                     loginInteractionId = startLoginResponse.interactionId;
-                    startLoginshieldActivity(mApp.getEndpointConfiguration().loginshieldPackageName, startLoginResponse.appLinkUrl);
+                    startLoginshieldActivity(startLoginResponse.appLinkUrl);
                 } else {
                     View v = findViewById(android.R.id.content);
-                    showSnackbar(v, getResources().getString(R.string.login_failed));
+                    showSnackbar(v, getString(R.string.login_failed));
                 }
             }
         };
-        Log.d("CRYPTIUM", "startLoginTask executed");
+        Log.d("LIBERTY.IO", "startLoginTask executed");
         StartLoginTask startLoginTask = new StartLoginTask(callback, mApp, gatewayClient, serviceHttpAgent);
         startLoginTask.execute(startLoginRequest);
     }
 
     // launch the LoginShield app for login to the Liberty.io service
-    public void startLoginshieldActivity(String packageName, String dataUrl) {
-        Log.d("CRYPTIUM", "startLoginshieldActivity");
+    public void startLoginshieldActivity(String dataUrl) {
+        Log.d("LIBERTY.IO", "startLoginshieldActivity");
         // Build the intent
         Uri loginshieldUrl = Uri.parse(dataUrl);
         Intent loginshieldIntent = new Intent("tech.cryptium.tigercomet.intent.action.LOGIN", loginshieldUrl);
@@ -162,16 +165,19 @@ public class LoginActivity extends AppCompatActivity {
 
         // Start an activity if it's safe
         if (isIntentSafe) {
-            Log.d("CRYPTIUM", "startLoginshieldActivity intent safe ");
+            Log.d("LIBERTY.IO", "startLoginshieldActivity intent safe ");
             startActivityForResult(loginshieldIntent, LOGIN_REQUEST_CODE);
-        } else {
-            Log.d("CRYPTIUM", "startLoginshieldActivity intent not safe ");
-            // Bring user to the market or let them choose an app?
+        } else if (!isOpenedAppStore) {
+            Log.d("LIBERTY.IO", "startLoginshieldActivity intent not safe ");
+            // Bring user to the market
             Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-            marketIntent.setData(Uri.parse("market://details?id=" + mApp.getEndpointConfiguration().loginshieldPackageName));
+            marketIntent.setData(Uri.parse("market://details?id=tech.cryptium.tigercomet.loginshield"));
             loginDataUri = dataUrl;
-            isOpeningAppStore = true;
+            isOpenedAppStore = true;
             startActivityForResult(marketIntent, MARKET_REQUEST_CODE);
+        } else {
+            View v = findViewById(android.R.id.content);
+            showSnackbar(v, "LoginShield is required");
         }
     }
 
@@ -188,32 +194,31 @@ public class LoginActivity extends AppCompatActivity {
                     editor.apply();
                 }
                 if (verifyRealmLoginResponse != null) {
-                    Log.d("CRYPTIUM", "VerifyRealmLoginResponse finished, isAuthenticated: " + verifyRealmLoginResponse.isAuthenticated);
+                    Log.d("LIBERTY.IO", "VerifyRealmLoginResponse finished, isAuthenticated: " + verifyRealmLoginResponse.isAuthenticated);
                     if (verifyRealmLoginResponse.isAuthenticated != null && verifyRealmLoginResponse.isAuthenticated) {
-                        Log.d("CRYPTIUM", "onLoginShieldResultOk: RESULT_OK");
+                        Log.d("LIBERTY.IO", "onLoginShieldResultOk: RESULT_OK");
                         Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(homeIntent);
                         finish();
                     } else {
-                        // TODO: login failed
-                        Log.d("CRYPTIUM", "onLoginShieldResultOk: login failed");
+                        Log.d("LIBERTY.IO", "onLoginShieldResultOk: login failed");
                         View v = findViewById(android.R.id.content);
-                        showSnackbar(v, getResources().getString(R.string.login_failed));
+                        showSnackbar(v, getString(R.string.login_failed));
                     }
                 } else {
                     View v = findViewById(android.R.id.content);
-                    showSnackbar(v, getResources().getString(R.string.login_failed));
+                    showSnackbar(v, getString(R.string.login_failed));
                 }
             }
         };
-        Log.d("CRYPTIUM", "startLoginTask executed");
+        Log.d("LIBERTY.IO", "startLoginTask executed");
         VerifyLoginTask verifyLoginTask = new VerifyLoginTask(callback, mApp, gatewayClient, serviceHttpAgent);
         verifyLoginTask.execute(loginInteractionId);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
         super.onActivityResult(requestCode, resultCode, resultIntent);
-        Log.d("CRYPTIUM", "onActivityResult requestCode: " + requestCode + " resultCode:  " + resultCode);
+        Log.d("LIBERTY.IO", "onActivityResult requestCode: " + requestCode + " resultCode:  " + resultCode);
         switch (requestCode) {
             case LOGIN_REQUEST_CODE:
                 onActivityResultFromLogin(resultCode, resultIntent);
@@ -222,68 +227,55 @@ public class LoginActivity extends AppCompatActivity {
                 onActivityResultFromMarket(resultCode, resultIntent);
                 break;
             default:
-                Log.e("CRYPTIUM LOGIN", String.format("unrecognized request code: %d", requestCode));
+                Log.e("LIBERTY.IO LOGIN", String.format("unrecognized request code: %d", requestCode));
         }
     }
 
     public void onActivityResultFromLogin(int resultCode, Intent resultIntent) {
         try {
-            Log.d("CRYPTIUM", "onActivityResultFromLogin resultCode: " + resultCode);
+            Log.d("LIBERTY.IO", "onActivityResultFromLogin resultCode: " + resultCode);
             if (resultCode == Activity.RESULT_OK) {
-                Log.d("CRYPTIUM", String.format("onActivityResultFromLogin: onActivityResultFromLogin: RESULT_OK"));
+                Log.d("LIBERTY.IO", String.format("onActivityResultFromLogin: onActivityResultFromLogin: RESULT_OK"));
                 onLoginShieldResultOk();
             } else {
-                Log.d("CRYPTIUM", "onActivityResultFromLogin: login cancelled");
+                Log.d("LIBERTY.IO", "onActivityResultFromLogin: login cancelled");
                 View v = findViewById(android.R.id.content);
-                showSnackbar(v, getResources().getString(R.string.login_failed));
+                showSnackbar(v, getString(R.string.login_failed));
             }
         } catch (Exception e) {
-            Log.d("CRYPTIUM", "onActivityResultFromLogin error: ", e);
+            Log.d("LIBERTY.IO", "onActivityResultFromLogin error: ", e);
         }
 
     }
 
     public void onActivityResultFromMarket(int resultCode, Intent resultIntent) {
-        Log.d("CRYPTIUM", "onActivityResultFromLogin resultCode: " + resultCode);
+        Log.d("LIBERTY.IO", "onActivityResultFromMarket resultCode: " + resultCode);
         if (resultCode == Activity.RESULT_OK) {
             String action = resultIntent.getStringExtra("action");
             // When user comes back to Note app from marketplace, check action for result and either login or display error
             if (action != null) {
-                Log.d("CRYPTIUM", String.format("LoginActivity: onActivityResultFromLogin: action = %s", action));
-                startLoginshieldActivity(mApp.getEndpointConfiguration().loginshieldPackageName, "login://tigercomet.x7.cryptium.tech/#mx=123&key=321");
+                Log.d("LIBERTY.IO", String.format("LoginActivity: onActivityResultFromMarket: action = %s", action));
+                try {
+                    login();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             // unlock was cancelled, so we can't do anything
-//            Intent loginResult = new Intent();
-//            loginResult.putExtra("action", "login");
-//            setResult(Activity.RESULT_CANCELED, loginResult);
-//            finish();
+            View v = findViewById(android.R.id.content);
+            showSnackbar(v, getString(R.string.try_again));
         }
     }
 
-    private void setupFloatingLabelError() {
-        final TextInputLayout floatingUsernameLabel = (TextInputLayout) findViewById(R.id.textLayoutEmail);
-        floatingUsernameLabel.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence text, int start, int count, int after) {
-                if (text.length() > 0 && text.length() <= 4) {
-                    floatingUsernameLabel.setError(getString(R.string.email_required));
-                    floatingUsernameLabel.setErrorEnabled(true);
-                } else {
-                    floatingUsernameLabel.setErrorEnabled(false);
-                }
-            }
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                // TODO Auto-generated method stub
-            }
+    public class InstallListener implements View.OnClickListener {
 
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        @Override
+        public void onClick(View v) {
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+            marketIntent.setData(Uri.parse("market://details?id=tech.cryptium.tigercomet.loginshield"));
+            startActivityForResult(marketIntent, MARKET_REQUEST_CODE);
+        }
     }
 
     public void showSnackbar(View v, String message) {
@@ -294,6 +286,9 @@ public class LoginActivity extends AppCompatActivity {
         params.gravity = Gravity.TOP;
         params.gravity = Gravity.CENTER_HORIZONTAL;
         v.setLayoutParams(params);
+        if (isOpenedAppStore) {
+            snackbar.setAction("Install", new InstallListener());
+        }
         snackbar.show();
     }
 
@@ -301,9 +296,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (isOpeningAppStore) {
-            isOpeningAppStore = false;
-            startLoginshieldActivity(mApp.getEndpointConfiguration().loginshieldPackageName, loginDataUri);
+        if (isOpenedAppStore) {
+            startLoginshieldActivity(loginDataUri);
         }
     }
 }

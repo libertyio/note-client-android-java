@@ -9,6 +9,14 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.lifecycle.LifecycleObserver;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.liberty.note.protocol.CreateAccountRequest;
+import io.liberty.note.protocol.CreateAccountResponse;
+import io.liberty.note.protocol.CreateNoteRequest;
+import io.liberty.note.protocol.CreateNoteResponse;
+import io.liberty.note.protocol.DeleteNoteRequest;
+import io.liberty.note.protocol.DeleteNoteResponse;
+import io.liberty.note.protocol.EditNoteRequest;
+import io.liberty.note.protocol.EditNoteResponse;
 import my.apache.http.client.config.CookieSpecs;
 import my.apache.http.client.config.RequestConfig;
 import my.apache.http.client.methods.HttpGet;
@@ -26,9 +34,9 @@ import java.net.URISyntaxException;
 
 public class LibertyNote extends Application implements LifecycleObserver {
 
-    NoteList noteList;
-    ObjectMapper mapper;
-    private EndpointConfiguration endpointConfiguration;
+    public NoteList noteList;
+    private ObjectMapper mapper;
+    public EndpointConfiguration endpointConfiguration;
     final public static String PREFS_FILE = "login_preferences";
     private HttpAgent httpAgent;
 
@@ -43,38 +51,15 @@ public class LibertyNote extends Application implements LifecycleObserver {
         mapper = new ObjectMapper();
 
         endpointConfiguration = new EndpointConfiguration();
-        endpointConfiguration.serviceEndpointUrl = getResources().getString(R.string.service_endpoint_url);
-        endpointConfiguration.loginshieldEndpointUrl = getResources().getString(R.string.loginshield_endpoint_url);
-        endpointConfiguration.loginshieldPackageName = getResources().getString(R.string.loginshield_package_name);
+        endpointConfiguration.serviceEndpointUrl = getString(R.string.service_endpoint_url);
+        endpointConfiguration.loginshieldEndpointUrl = getString(R.string.loginshield_endpoint_url);
+        endpointConfiguration.loginshieldPackageName = getString(R.string.loginshield_package_name);
 
         CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build()).build();
         HttpClientContext httpClientContext = HttpClientContext.create();
         BasicCookieStore basicCookieStore = new BasicCookieStore();
         httpClientContext.setCookieStore(basicCookieStore);
         httpAgent = new HttpAgent(httpClient, httpClientContext);
-
-
-//        try {
-//            serviceEndpoint = new URL(getString(R.string.service_endpoint_url));
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//        httpAgent = new HttpAgent(serviceEndpoint, httpClient, httpClientContext);
-//        HttpAuthorization httpAuthorization = new HttpAuthorization() {
-//            @Override
-//            public void onUnauthorized() throws IOException {
-//                AsymmetricKey identityKey = initClientIdentity();
-//                login(identityKey);
-//            }
-//
-//            @Override
-//            public void authorize(HttpRequest request) throws IOException {
-//                if (clientAuthorizationToken != null && clientAuthorizationToken.token != null) {
-//                    request.setHeader("Authorization", String.format("Token %s", clientAuthorizationToken.token));
-//                }
-//            }
-//        };
-//        httpAgentWithAuthorization = new HttpAgentWithAuthorization(httpAgent, httpAuthorization);
     }
 
     public EndpointConfiguration getEndpointConfiguration() {
@@ -83,6 +68,25 @@ public class LibertyNote extends Application implements LifecycleObserver {
 
     public HttpAgent getHttpAgent() {
         return httpAgent;
+    }
+
+    public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) throws IOException {
+        String jsonString = mapper.writeValueAsString(createAccountRequest);
+        Log.d("LIBERTY.IO", "createAccount jsonString: " + jsonString);
+        URI uri;
+        try {
+            URIBuilder uribuilder = new URIBuilder(endpointConfiguration.serviceEndpointUrl);
+            uribuilder.setPath(endpointConfiguration.CREATE_ACCOUNT_PATH);
+            uri = uribuilder.build();
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
+        HttpPost httpPostRequest = createHttpPostWithString(uri.toString(), jsonString, endpointConfiguration.APPLICATION_JSON);
+        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, endpointConfiguration.APPLICATION_JSON);
+        CreateAccountResponse createAccountResponse = mapper.readValue(httpPostResult, CreateAccountResponse.class);
+        Log.d("LIBERTY.IO", "createAccount response: " + createAccountResponse.isSent);
+        return createAccountResponse;
+
     }
 
     public void getNoteList() throws IOException {
@@ -95,14 +99,14 @@ public class LibertyNote extends Application implements LifecycleObserver {
             throw new IOException(e);
         }
         HttpGet httpGetRequest = new HttpGet(uri.toString());
-        String httpGetResult = httpAgent.getStringWithContentType(httpGetRequest, endpointConfiguration.CONTENT_TYPE);
+        String httpGetResult = httpAgent.getStringWithContentType(httpGetRequest, endpointConfiguration.APPLICATION_JSON);
         noteList = mapper.readValue(httpGetResult, NoteList.class);
-        Log.d("CRYPTIUM", String.format("getLoginStatus response status %s", httpGetResult));
+        Log.d("LIBERTY.IO", String.format("getLoginStatus response status %s", httpGetResult));
     }
 
     public EditNoteResponse editNote(EditNoteRequest editNoteRequest) throws IOException {
         String jsonString = mapper.writeValueAsString(editNoteRequest);
-        Log.d("CRYPTIUM", "editNote jsonString: " + jsonString);
+        Log.d("LIBERTY.IO", "editNote jsonString: " + jsonString);
         URI uri;
         try {
             URIBuilder uribuilder = new URIBuilder(endpointConfiguration.serviceEndpointUrl);
@@ -112,16 +116,16 @@ public class LibertyNote extends Application implements LifecycleObserver {
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
-        HttpPost httpPostRequest = createHttpPostWithString(uri.toString(), jsonString, endpointConfiguration.CONTENT_TYPE);
-        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, endpointConfiguration.CONTENT_TYPE);
+        HttpPost httpPostRequest = createHttpPostWithString(uri.toString(), jsonString, endpointConfiguration.APPLICATION_JSON);
+        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, endpointConfiguration.APPLICATION_JSON);
         EditNoteResponse editNoteResponse = mapper.readValue(httpPostResult, EditNoteResponse.class);
-        Log.d("CRYPTIUM", "editNote response: " + editNoteResponse.isEdited);
+        Log.d("LIBERTY.IO", "editNote response: " + editNoteResponse.isEdited);
         return editNoteResponse;
     }
 
     public CreateNoteResponse createNote(CreateNoteRequest createNoteRequest) throws IOException {
         String jsonString = mapper.writeValueAsString(createNoteRequest);
-        Log.d("CRYPTIUM", "createNote jsonString: " + jsonString);
+        Log.d("LIBERTY.IO", "createNote jsonString: " + jsonString);
         URI uri;
         try {
             URIBuilder uribuilder = new URIBuilder(endpointConfiguration.serviceEndpointUrl);
@@ -130,32 +134,31 @@ public class LibertyNote extends Application implements LifecycleObserver {
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
-        HttpPost httpPostRequest = createHttpPostWithString(uri.toString(), jsonString, endpointConfiguration.CONTENT_TYPE);
-        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, endpointConfiguration.CONTENT_TYPE);
+        HttpPost httpPostRequest = createHttpPostWithString(uri.toString(), jsonString, endpointConfiguration.APPLICATION_JSON);
+        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, endpointConfiguration.APPLICATION_JSON);
         CreateNoteResponse createNoteResponse = mapper.readValue(httpPostResult, CreateNoteResponse.class);
-        Log.d("CRYPTIUM", "createNote response: " + createNoteResponse.isCreated);
+        Log.d("LIBERTY.IO", "createNote response: " + createNoteResponse.isCreated);
         return createNoteResponse;
-
     }
 
     public DeleteNoteResponse deleteNote(DeleteNoteRequest deleteNoteRequest) throws IOException {
         String jsonString = mapper.writeValueAsString(deleteNoteRequest);
-        Log.d("CRYPTIUM", "deleteNote jsonString: " + jsonString);
+        Log.d("LIBERTY.IO", "deleteNote jsonString: " + jsonString);
         URI uri;
         try {
             URIBuilder uribuilder = new URIBuilder(endpointConfiguration.serviceEndpointUrl);
             uribuilder.setPath(endpointConfiguration.DELETE_PATH);
             uribuilder.addParameter("id", deleteNoteRequest.id);
             uri = uribuilder.build();
-            Log.d("CRYPTIUM", "setPath: " + uri);
+            Log.d("LIBERTY.IO", "setPath: " + uri);
         } catch (URISyntaxException e) {
             throw new IOException(e);
         }
-        HttpPost httpPostRequest = createHttpPostWithString(uri.toString(), jsonString, endpointConfiguration.CONTENT_TYPE);
-        // TODO: This is not returning an unexpected result, check server and check that substring(1) is actually required
-        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, endpointConfiguration.CONTENT_TYPE);
+        HttpPost httpPostRequest = createHttpPostWithString(uri.toString(), jsonString, endpointConfiguration.APPLICATION_JSON);
+        // This is not returning an unexpected result, check server and check that substring(1) is actually required
+        String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, endpointConfiguration.APPLICATION_JSON);
         DeleteNoteResponse deleteNoteResponse = mapper.readValue(httpPostResult, DeleteNoteResponse.class);
-        Log.d("CRYPTIUM", "deleteNote response: " + deleteNoteResponse.isDeleted);
+        Log.d("LIBERTY.IO", "deleteNote response: " + deleteNoteResponse.isDeleted);
         return deleteNoteResponse;
     }
 

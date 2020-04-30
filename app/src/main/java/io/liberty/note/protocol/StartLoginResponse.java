@@ -1,16 +1,16 @@
-package io.liberty.note;
+package io.liberty.note.protocol;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public class CreateNoteResponse {
+public class StartLoginResponse {
 
-    @JsonProperty("isCreated")
-    public Boolean isCreated;
+    @JsonProperty("appLinkUrl")
+    public String appLinkUrl;
 
-    @JsonProperty("id")
-    public String id;
+    @JsonProperty("interactionId")
+    public String interactionId;
 
     @JsonProperty("error")
     public Boolean error;

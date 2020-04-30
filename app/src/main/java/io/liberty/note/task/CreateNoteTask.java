@@ -3,15 +3,14 @@ package io.liberty.note.task;
 import android.os.AsyncTask;
 import android.util.Log;
 import java.io.IOException;
-
-import io.liberty.note.CreateNoteRequest;
-import io.liberty.note.CreateNoteResponse;
+import io.liberty.note.protocol.CreateNoteRequest;
+import io.liberty.note.protocol.CreateNoteResponse;
 import io.liberty.note.LibertyNote;
 
 public class CreateNoteTask extends AsyncTask<CreateNoteRequest, Void, CreateNoteResponse> {
     private CreateNoteTaskResultListener listener;
     private LibertyNote mApp;
-    CreateNoteRequest createNoteRequest;
+    private CreateNoteRequest createNoteRequest;
 
     public CreateNoteTask(CreateNoteTask.CreateNoteTaskResultListener listener, LibertyNote mApp, CreateNoteRequest createNoteRequest) {
         this.listener = listener;
@@ -29,12 +28,12 @@ public class CreateNoteTask extends AsyncTask<CreateNoteRequest, Void, CreateNot
     }
 
     protected CreateNoteResponse doInBackground(CreateNoteRequest... params) {
-        Log.d("CRYPTIUM", "CreateNoteTask doInBackground...");
+        Log.d("LIBERTY.IO", "CreateNoteTask doInBackground...");
         try {
             // Create note in database
             return mApp.createNote(params[0]);
         } catch (IOException e) {
-            Log.e("CRYPTIUM", "doInBackground Error: ", e);
+            Log.e("LIBERTY.IO", "doInBackground Error: ", e);
             CreateNoteResponse createNoteResponse = new CreateNoteResponse();
             createNoteResponse.isCreated = false;
             return createNoteResponse;

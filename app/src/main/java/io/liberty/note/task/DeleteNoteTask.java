@@ -3,15 +3,14 @@ package io.liberty.note.task;
 import android.os.AsyncTask;
 import android.util.Log;
 import java.io.IOException;
-
-import io.liberty.note.DeleteNoteRequest;
-import io.liberty.note.DeleteNoteResponse;
+import io.liberty.note.protocol.DeleteNoteRequest;
+import io.liberty.note.protocol.DeleteNoteResponse;
 import io.liberty.note.LibertyNote;
 
 public class DeleteNoteTask extends AsyncTask<DeleteNoteRequest, Void, DeleteNoteResponse> {
     private DeleteNoteTaskResultListener listener;
     private LibertyNote mApp;
-    DeleteNoteRequest deleteNoteRequest;
+    private DeleteNoteRequest deleteNoteRequest;
 
     public DeleteNoteTask(DeleteNoteTask.DeleteNoteTaskResultListener listener, LibertyNote mApp, DeleteNoteRequest deleteNoteRequest) {
         this.listener = listener;
@@ -29,12 +28,12 @@ public class DeleteNoteTask extends AsyncTask<DeleteNoteRequest, Void, DeleteNot
     }
 
     protected DeleteNoteResponse doInBackground(DeleteNoteRequest... params) {
-        Log.d("CRYPTIUM", "DeleteNoteTask doInBackground...");
+        Log.d("LIBERTY.IO", "DeleteNoteTask doInBackground...");
         try {
             // Delete note from database
             return mApp.deleteNote(params[0]);
         } catch (IOException e) {
-            Log.e("CRYPTIUM", "doInBackground Error: ", e);
+            Log.e("LIBERTY.IO", "doInBackground Error: ", e);
             DeleteNoteResponse deleteNoteResponse = new DeleteNoteResponse();
             deleteNoteResponse.isDeleted = false;
             return deleteNoteResponse;

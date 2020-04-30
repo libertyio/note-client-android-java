@@ -34,11 +34,11 @@ public class GetNoteTask extends AsyncTask<Void, Void, GetNoteTask.GetNoteTaskRe
     }
 
     protected GetNoteTaskResult doInBackground(Void... params) {
-        Log.d("CRYPTIUM", "GetNoteTask doInBackground...");
+        Log.d("LIBERTY.IO", "GetNoteTask doInBackground...");
         try {
             mApp.getNoteList();
         } catch (IOException e) {
-            Log.d("CRYPTIUM", "getNoteTask doInBackground ERROR");
+            Log.d("LIBERTY.IO", "getNoteTask doInBackground ERROR");
             e.printStackTrace();
         }
         return new GetNoteTaskResult(true);

@@ -1,4 +1,4 @@
-package io.liberty.note;
+package io.liberty.note.protocol;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

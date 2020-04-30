@@ -5,11 +5,15 @@ public class Note {
     public String content;
     public String id;
 
-//    public Note(Info info, String content, String id) {
-//        this.info = info;
-//        this.content = content;
-//        this.id = id;
-//    }
+    public Note(Info info, String content, String id) {
+        this.info = info;
+        this.content = content;
+        this.id = id;
+    }
+
+    public Note() {
+
+    }
 
     public static class Info{
         public String title;
