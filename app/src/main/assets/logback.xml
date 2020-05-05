@@ -1,14 +1,15 @@
 <configuration>
   <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
     <tagEncoder>
-      <pattern>%logger{12}</pattern>
+      <pattern>LIBERTY.IO</pattern>
     </tagEncoder>
     <encoder>
-      <pattern>[%-20thread] %msg</pattern>
+      <!-- NOTE: %level is already encoded by logcat like D/<tag>, E/<tag>, etc. -->
+      <pattern>[%-20thread] %logger{35}: %msg</pattern>
     </encoder>
   </appender>
 
-  <root level="DEBUG">
+  <root level="INFO">
     <appender-ref ref="logcat" />
   </root>
 </configuration>
