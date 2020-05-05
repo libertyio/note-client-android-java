@@ -10,5 +10,5 @@ public class CreateAccountResponse {
     public Boolean isSent;
 
     @JsonProperty("error")
-    public Boolean error;
+    public String error;
 }

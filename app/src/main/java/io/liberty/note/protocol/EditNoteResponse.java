@@ -10,5 +10,5 @@ public class EditNoteResponse {
     public Boolean isEdited;
 
     @JsonProperty("error")
-    public Boolean error;
+    public String error;
 }

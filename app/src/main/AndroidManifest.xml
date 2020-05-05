@@ -29,6 +29,7 @@
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".HomeActivity"/>
+        <activity android:name=".ReportExceptionActivity"/>
     </application>
 
 </manifest>

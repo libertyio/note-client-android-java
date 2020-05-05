@@ -11,7 +11,8 @@ public class EndpointConfiguration {
     final public String CREATE_ACCOUNT_PATH = "/service/user/create";
     final public String REALM_START_LOGIN_PATH = "/service/session/login";
     final public String REALM_VERIFY_LOGIN_PATH = "/service/session/login";
-    final public String WEBSITE_CREATE_ACCOUNT_PATH = "/create-account";
+    final public String REPORT_EXCEPTION_PATH = "/service/report/exception";
+
     public String serviceEndpointUrl;
     public String loginshieldEndpointUrl;
     public String loginshieldPackageName;

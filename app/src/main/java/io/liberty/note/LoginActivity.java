@@ -19,12 +19,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.loginshield.sdk.realm.login.gateway.GatewayClient;
-import com.loginshield.sdk.realm.login.gateway.protocol.VerifyRealmLoginResponse;
 import java.io.IOException;
 import java.util.List;
 import org.underlake.sdk.http.HttpAgent;
 import io.liberty.note.protocol.StartLoginRequest;
 import io.liberty.note.protocol.StartLoginResponse;
+import io.liberty.note.protocol.VerifyLoginResponse;
 import io.liberty.note.task.StartLoginTask;
 import io.liberty.note.task.VerifyLoginTask;
 import my.apache.http.client.config.CookieSpecs;
@@ -72,7 +72,8 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     login();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Intent intent = ReportExceptionActivity.createIntent(LoginActivity.this, "login-button-click", e, null);
+                    startActivity(intent);
                 }
             }
         });
@@ -109,10 +110,10 @@ public class LoginActivity extends AppCompatActivity {
         httpAgent.addHelper(clientTokenHelper);
         gatewayClient = new GatewayClient(httpAgent);
         gatewayClient.setEndpointURL(mApp.getEndpointConfiguration().loginshieldEndpointUrl);
-        String realmStartLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_START_LOGIN_PATH;
-        gatewayClient.setRealmStartLoginURL(realmStartLoginUrl);
-        String realmVerifyLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_VERIFY_LOGIN_PATH;
-        gatewayClient.setRealmVerifyLoginURL(realmVerifyLoginUrl);
+//        String realmStartLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_START_LOGIN_PATH;
+//        gatewayClient.setRealmStartLoginURL(realmStartLoginUrl);
+//        String realmVerifyLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_VERIFY_LOGIN_PATH;
+//        gatewayClient.setRealmVerifyLoginURL(realmVerifyLoginUrl);
     }
 
     public void login() throws IOException {
@@ -134,12 +135,12 @@ public class LoginActivity extends AppCompatActivity {
     public void startLoginTask(StartLoginRequest startLoginRequest) {
         final StartLoginTask.StartLoginTaskResultListener callback = new StartLoginTask.StartLoginTaskResultListener() {
             @Override
-            public void onStartLoginTaskResult(StartLoginResponse startLoginResponse) {
+            public void onStartLoginTaskResult(StartLoginTask.StartLoginTaskResult startLoginTaskResult) {
                 progressBar.setVisibility(View.INVISIBLE);
-                if (startLoginResponse != null) {
-                    Log.d("LIBERTY.IO", String.format("StartLoginResponse finished, appLinkUrl: %s interactionId: %s", startLoginResponse.appLinkUrl, startLoginResponse.interactionId));
-                    loginInteractionId = startLoginResponse.interactionId;
-                    startLoginshieldActivity(startLoginResponse.appLinkUrl);
+                if (startLoginTaskResult != null) {
+                    Log.d("LIBERTY.IO", String.format("StartLoginResponse finished, appLinkUrl: %s interactionId: %s", startLoginTaskResult.appLinkUrl, startLoginTaskResult.interactionId));
+                    loginInteractionId = startLoginTaskResult.interactionId;
+                    startLoginshieldActivity(startLoginTaskResult.appLinkUrl);
                 } else {
                     View v = findViewById(android.R.id.content);
                     showSnackbar(v, getString(R.string.login_failed));
@@ -184,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginShieldResultOk() throws IOException {
         final VerifyLoginTask.VerifyLoginTaskResultListener callback = new VerifyLoginTask.VerifyLoginTaskResultListener() {
             @Override
-            public void onVerifyLoginTaskResult(VerifyRealmLoginResponse verifyRealmLoginResponse) {
+            public void onVerifyLoginTaskResult(VerifyLoginResponse verifyLoginResponse) {
                 progressBar.setVisibility(View.INVISIBLE);
                 String loginshieldGatewayProxyClientToken = clientTokenHelper.getClientToken();
                 if (loginshieldGatewayProxyClientToken != null) {
@@ -193,9 +194,9 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("loginshieldGatewayProxyClientToken", loginshieldGatewayProxyClientToken);
                     editor.apply();
                 }
-                if (verifyRealmLoginResponse != null) {
-                    Log.d("LIBERTY.IO", "VerifyRealmLoginResponse finished, isAuthenticated: " + verifyRealmLoginResponse.isAuthenticated);
-                    if (verifyRealmLoginResponse.isAuthenticated != null && verifyRealmLoginResponse.isAuthenticated) {
+                if (verifyLoginResponse != null) {
+                    Log.d("LIBERTY.IO", "VerifyLoginResponse finished, isAuthenticated: " + verifyLoginResponse.isAuthenticated);
+                    if (verifyLoginResponse.isAuthenticated != null && verifyLoginResponse.isAuthenticated) {
                         Log.d("LIBERTY.IO", "onLoginShieldResultOk: RESULT_OK");
                         Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(homeIntent);
@@ -211,7 +212,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
-        Log.d("LIBERTY.IO", "startLoginTask executed");
+        Log.d("LIBERTY.IO", "onLoginShieldResultOk, starting verifyLoginTask with interaction Id "+loginInteractionId);
         VerifyLoginTask verifyLoginTask = new VerifyLoginTask(callback, mApp, gatewayClient, serviceHttpAgent);
         verifyLoginTask.execute(loginInteractionId);
     }
@@ -244,6 +245,8 @@ public class LoginActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             Log.d("LIBERTY.IO", "onActivityResultFromLogin error: ", e);
+            Intent intent = ReportExceptionActivity.createIntent(LoginActivity.this, "onActivityResultFromLogin", e, null);
+            startActivity(intent);
         }
 
     }
@@ -258,7 +261,8 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     login();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Intent intent = ReportExceptionActivity.createIntent(LoginActivity.this, "onActivityResultFromMarket", e, null);
+                    startActivity(intent);
                 }
             }
         } else {

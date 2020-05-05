@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# classes used with Jackson ObjectMapper use @JsonParameter annotations to map field names,
+# so we need to keep those annotations or else the fields won't be found after obfuscation,
+# and we also need to keep the annotated fields themselves
+-keepattributes RuntimeVisibleAnnotations
+-keepclassmembers class * {
+    @com.fasterxml.jackson.annotation.JsonProperty *;
+}

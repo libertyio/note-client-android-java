@@ -27,4 +27,8 @@
     <string name="name_empty">Enter your name</string>
     <string name="email_empty">Enter your email</string>
     <string name="terms_unchecked">Agree to terms of service</string>
+    <string name="situation_report">Situation Report</string>
+    <string name="exception_help">Something unexpected happened. Please share this report with us so we can improve the app.</string>
+    <string name="report_exception_failed">Sharing failed</string>
+    <string name="share">Share</string>
 </resources>

@@ -4,22 +4,21 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loginshield.sdk.realm.login.gateway.GatewayClient;
-import com.loginshield.sdk.realm.login.gateway.protocol.VerifyRealmLoginRequest;
-import com.loginshield.sdk.realm.login.gateway.protocol.VerifyRealmLoginResponse;
 import com.loginshield.sdk.realm.login.gateway.protocol.VerifyTokenInfo;
 import org.underlake.sdk.http.HttpAgent;
 import java.io.IOException;
 import io.liberty.note.LibertyNote;
+import io.liberty.note.protocol.VerifyLoginRequest;
+import io.liberty.note.protocol.VerifyLoginResponse;
 import my.apache.http.client.methods.HttpPost;
 
-public class VerifyLoginTask extends AsyncTask<String, Void, VerifyRealmLoginResponse> {
+public class VerifyLoginTask extends AsyncTask<String, Void, VerifyLoginResponse> {
     private VerifyLoginTaskResultListener listener;
     private LibertyNote mApp;
     private GatewayClient gatewayClient;
     private HttpAgent httpAgent;
     private final static String APPLICATION_JSON = "application/json";
     private ObjectMapper mapper = new ObjectMapper();
-    final private String REALM_VERIFY_LOGIN_URL = "https://libertynote.x7.cryptium.tech/service/session/login";
 
     public VerifyLoginTask(VerifyLoginTask.VerifyLoginTaskResultListener listener, LibertyNote mApp, GatewayClient gatewayClient, HttpAgent httpAgent) {
         this.listener = listener;
@@ -29,7 +28,7 @@ public class VerifyLoginTask extends AsyncTask<String, Void, VerifyRealmLoginRes
     }
 
     public interface VerifyLoginTaskResultListener {
-        void onVerifyLoginTaskResult(VerifyRealmLoginResponse verifyRealmLoginResponse);
+        void onVerifyLoginTaskResult(VerifyLoginResponse verifyLoginResponse);
     }
 
     @Override
@@ -37,35 +36,36 @@ public class VerifyLoginTask extends AsyncTask<String, Void, VerifyRealmLoginRes
         super.onPreExecute();
     }
 
-    protected VerifyRealmLoginResponse doInBackground(String... params) {
+    protected VerifyLoginResponse doInBackground(String... params) {
         Log.d("LIBERTY.IO", "VerifyLoginTask doInBackground... ");
         try {
             VerifyTokenInfo verifyTokenInfo = gatewayClient.getLoginVerificationToken(); // This calls sdk
             String loginInteractionId = params[0];
             return verifyRealmLogin(verifyTokenInfo, loginInteractionId);
         } catch (IOException e) {
-            Log.e("LIBERTY.IO", "VerifyRealmLoginResponse doInBackground Error: ", e);
+            Log.e("LIBERTY.IO", "VerifyLoginResponse doInBackground Error: ", e);
             return null;
         }
     }
 
-    protected void onPostExecute(VerifyRealmLoginResponse verifyRealmLoginResponse) {
-        super.onPostExecute(verifyRealmLoginResponse);
+    protected void onPostExecute(VerifyLoginResponse verifyLoginResponse) {
+        super.onPostExecute(verifyLoginResponse);
         if( listener != null ) {
-            listener.onVerifyLoginTaskResult(verifyRealmLoginResponse);
+            listener.onVerifyLoginTaskResult(verifyLoginResponse);
         }
     }
 
-    private VerifyRealmLoginResponse verifyRealmLogin(VerifyTokenInfo verifyTokenInfo, String loginInteractionId) throws IOException {
-        VerifyRealmLoginRequest verifyRealmLoginRequest = new VerifyRealmLoginRequest();
+    private VerifyLoginResponse verifyRealmLogin(VerifyTokenInfo verifyTokenInfo, String loginInteractionId) throws IOException {
+        VerifyLoginRequest verifyRealmLoginRequest = new VerifyLoginRequest();
         verifyRealmLoginRequest.interactionId = loginInteractionId;
         verifyRealmLoginRequest.verifyToken = verifyTokenInfo.verifyToken;
         String jsonString = mapper.writeValueAsString(verifyRealmLoginRequest);
         Log.d("LIBERTY.IO", String.format("verifyRealmLogin jsonString: %s", jsonString));
-        HttpPost httpPostRequest = mApp.createHttpPostWithString(REALM_VERIFY_LOGIN_URL, jsonString, APPLICATION_JSON);
+        String verifyRealmLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_VERIFY_LOGIN_PATH;
+        HttpPost httpPostRequest = mApp.createHttpPostWithString(verifyRealmLoginUrl, jsonString, APPLICATION_JSON);
         String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, APPLICATION_JSON);
-        VerifyRealmLoginResponse verifyRealmLoginResponse = mapper.readValue(httpPostResult, VerifyRealmLoginResponse.class);
-        Log.d("LIBERTY.IO", String.format("verifyRealmLogin response isAuthenticated %s error %s", verifyRealmLoginResponse.isAuthenticated, verifyRealmLoginResponse.error));
-        return verifyRealmLoginResponse;
+        VerifyLoginResponse verifyLoginResponse = mapper.readValue(httpPostResult, VerifyLoginResponse.class);
+        Log.d("LIBERTY.IO", String.format("verifyRealmLogin response isAuthenticated %s error %s", verifyLoginResponse.isAuthenticated, verifyLoginResponse.error));
+        return verifyLoginResponse;
     }
 }

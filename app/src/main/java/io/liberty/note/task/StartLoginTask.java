@@ -4,8 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loginshield.sdk.realm.login.gateway.GatewayClient;
-import com.loginshield.sdk.realm.login.gateway.protocol.StartRealmLoginRequest;
-import com.loginshield.sdk.realm.login.gateway.protocol.StartRealmLoginResponse;
 import org.underlake.sdk.http.HttpAgent;
 import java.io.IOException;
 import io.liberty.note.LibertyNote;
@@ -13,7 +11,8 @@ import io.liberty.note.protocol.StartLoginRequest;
 import io.liberty.note.protocol.StartLoginResponse;
 import my.apache.http.client.methods.HttpPost;
 
-public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLoginResponse> {
+public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLoginTask.StartLoginTaskResult> {
+    private final static org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(StartLoginTask.class);
     private StartLoginTaskResultListener listener;
     private LibertyNote mApp;
     private GatewayClient gatewayClient;
@@ -28,7 +27,7 @@ public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLogi
     }
 
     public interface StartLoginTaskResultListener {
-        void onStartLoginTaskResult(StartLoginResponse startLoginResponse);
+        void onStartLoginTaskResult(StartLoginTaskResult startLoginResponse);
     }
 
     @Override
@@ -36,38 +35,51 @@ public class StartLoginTask extends AsyncTask<StartLoginRequest, Void, StartLogi
         super.onPreExecute();
     }
 
-    protected StartLoginResponse doInBackground(StartLoginRequest... params) {
-        Log.d("LIBERTY.IO", "StartLoginTask doInBackground... params[0]: " + params[0].username);
+    protected StartLoginTaskResult doInBackground(StartLoginRequest... params) {
+        LOG.debug("StartLoginTask doInBackground... username: {}", params[0].username);
         try {
-            StartRealmLoginRequest startRealmLoginRequest = new StartRealmLoginRequest();
-            startRealmLoginRequest.username = params[0].username;
-            StartRealmLoginResponse startRealmLoginResponse = startRealmLogin(startRealmLoginRequest);
-            String appLinkUrl = gatewayClient.startRealmLoginWithForwardUrl(startRealmLoginResponse.forward);
-            StartLoginResponse startLoginResponse = new StartLoginResponse();
-            startLoginResponse.appLinkUrl = appLinkUrl;
-            startLoginResponse.interactionId = startRealmLoginResponse.interactionId;
-            return startLoginResponse;
+            StartLoginRequest startLoginRequest = new StartLoginRequest();
+            startLoginRequest.username = params[0].username;
+            StartLoginResponse startLoginResponse = startRealmLogin(startLoginRequest);
+            LOG.debug("StartLoginTask doInBackground got startLoginResponse, calling startRealmLoginWithForwardUrl");
+            String appLinkUrl = gatewayClient.startRealmLoginWithForwardUrl(startLoginResponse.forward);
+            StartLoginTaskResult startLoginTaskResult = new StartLoginTaskResult();
+            startLoginTaskResult.appLinkUrl = appLinkUrl;
+            startLoginTaskResult.interactionId = startLoginResponse.interactionId;
+            return startLoginTaskResult;
         } catch (IOException e) {
-            Log.e("LIBERTY.IO", "StartLoginResponse doInBackground Error: " + e);
+            LOG.error("StartLoginTask doInBackground error", e);
             return null;
         }
     }
 
-    protected void onPostExecute(StartLoginResponse startLoginResponse) {
+    protected void onPostExecute(StartLoginTaskResult startLoginResponse) {
         super.onPostExecute(startLoginResponse);
         if( listener != null ) {
             listener.onStartLoginTaskResult(startLoginResponse);
         }
     }
 
-    public StartRealmLoginResponse startRealmLogin(StartRealmLoginRequest startRealmLoginRequest) throws IOException {
+    public StartLoginResponse startRealmLogin(StartLoginRequest startRealmLoginRequest) throws IOException {
         String jsonString = mapper.writeValueAsString(startRealmLoginRequest);
         String realmStartLoginUrl = mApp.getEndpointConfiguration().serviceEndpointUrl + mApp.getEndpointConfiguration().REALM_START_LOGIN_PATH;
-        Log.d("CRYPTPIUM", "startRealmLogin realmStartLoginUrl: " + realmStartLoginUrl);
+        LOG.debug("startRealmLogin realmStartLoginUrl: {}", realmStartLoginUrl);
         HttpPost httpPostRequest = mApp.createHttpPostWithString(realmStartLoginUrl, jsonString, mApp.getEndpointConfiguration().APPLICATION_JSON);
         String httpPostResult = httpAgent.getStringWithContentType(httpPostRequest, mApp.getEndpointConfiguration().APPLICATION_JSON);
-        StartRealmLoginResponse startRealmLoginResponse = mapper.readValue(httpPostResult, StartRealmLoginResponse.class);
-        Log.d("LIBERTY.IO", String.format("startRealmLogin response isAuthenticated %s forward url %s interactionId %s", startRealmLoginResponse.isAuthenticated, startRealmLoginResponse.forward, startRealmLoginResponse.interactionId));
-        return startRealmLoginResponse;
+        StartLoginResponse startLoginResponse = mapper.readValue(httpPostResult, StartLoginResponse.class);
+        LOG.debug("startRealmLogin response isAuthenticated {} forward url {} interactionId {}", startLoginResponse.isAuthenticated, startLoginResponse.forward, startLoginResponse.interactionId);
+        return startLoginResponse;
+    }
+
+    public static class StartLoginTaskResult {
+        /**
+         * Received from liberty.io server
+         */
+        public String interactionId;
+
+        /**
+         * Received from loginshield.com server
+         */
+        public String appLinkUrl;
     }
 }

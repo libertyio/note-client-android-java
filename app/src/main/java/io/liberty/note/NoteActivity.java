@@ -152,6 +152,7 @@ public class NoteActivity extends AppCompatActivity {
                 // Show snackbar with positive/negative result.
                 Log.d("LIBERTY.IO", "CreateNoteTask finished, isCreated: " + createNoteResponse.isCreated);
                 if (createNoteResponse.isCreated) {
+                    NoteActivity.this.id = createNoteResponse.id;
                     View v = findViewById(android.R.id.content);
                     showSnackbar(v, getString(R.string.note_created));
                 } else {

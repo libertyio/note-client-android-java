@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import io.liberty.note.protocol.NoteList;
 import io.liberty.note.task.GetNoteTask;
 
 public class HomeActivity extends AppCompatActivity {
