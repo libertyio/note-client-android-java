@@ -117,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login() throws IOException {
+        mApp.hideKeyboard(LoginActivity.this);
         progressBar.setVisibility(View.VISIBLE);
         if (textEditEmail.getText() != null) {
             if (textEditEmail.getText().toString().trim().length() > 0) {
@@ -198,6 +199,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("LIBERTY.IO", "VerifyLoginResponse finished, isAuthenticated: " + verifyLoginResponse.isAuthenticated);
                     if (verifyLoginResponse.isAuthenticated != null && verifyLoginResponse.isAuthenticated) {
                         Log.d("LIBERTY.IO", "onLoginShieldResultOk: RESULT_OK");
+                        mApp.setAuthenticated(true);
                         Intent homeIntent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(homeIntent);
                         finish();

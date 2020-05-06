@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.liberty.note">
-
-<!--    remove these later    -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- remove these later -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".LibertyNote"
@@ -25,11 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NoteActivity"/>
+        <activity android:name=".NoteActivity" />
         <activity android:name=".CreateAccountActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".HomeActivity"/>
-        <activity android:name=".ReportExceptionActivity"/>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".ReportExceptionActivity" />
+        <activity android:name=".AboutActivity" />
     </application>
 
 </manifest>

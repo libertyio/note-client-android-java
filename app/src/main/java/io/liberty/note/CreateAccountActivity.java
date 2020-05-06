@@ -47,7 +47,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         String checkBoxText = String.format("I agree to the <a href='%s/about/terms'>Terms of Use</a> and <a href='%s/about/privacy'>Privacy Policy</a>", getString(R.string.service_endpoint_url), getString(R.string.service_endpoint_url));
         checkboxAgree.setText(fromHtml(checkBoxText));
-        checkboxAgree.setLinkTextColor(getColor(R.color.blue));
+        checkboxAgree.setLinkTextColor(getColor(R.color.purple));
         checkboxAgree.setMovementMethod(LinkMovementMethod.getInstance());
 
         Intent createAccountIntent = getIntent();
@@ -58,6 +58,8 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
 
         textEditName.requestFocus();
+        mApp.showKeyboard(CreateAccountActivity.this);
+
 
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,10 +105,10 @@ public class CreateAccountActivity extends AppCompatActivity {
                 if (createAccountResponse.isSent) {
                     // TODO: Login
                     View v = findViewById(android.R.id.content);
-                    showSnackbar(v, getString(R.string.account_created));
+                    showSnackbar(v, getString(R.string.email_sent));
                 } else {
                     View v = findViewById(android.R.id.content);
-                    showSnackbar(v, getString(R.string.error_creating_account));
+                    showSnackbar(v, getString(R.string.error_sending_email));
                 }
             }
         };

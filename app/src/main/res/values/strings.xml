@@ -31,4 +31,18 @@
     <string name="exception_help">Something unexpected happened. Please share this report with us so we can improve the app.</string>
     <string name="report_exception_failed">Sharing failed</string>
     <string name="share">Share</string>
+    <string name="go_back">Go back</string>
+    <string name="delete">Delete</string>
+    <string name="your_name">Your name</string>
+    <string name="your_email">Your email</string>
+    <string name="email_sent">Check your email</string>
+    <string name="error_sending_email">Error sending email</string>
+    <string name="about">About</string>
+    <string name="version_number">Version number:</string>
+    <string name="version">version</string>
+    <string name="build_number">Build number:</string>
+    <string name="build">build</string>
+    <string name="liberty_infrasystems">2020 Liberty Infrasystems</string>
+    <string name="liberty_note_icon">Liberty Note icon</string>
+    <string name="menu">Menu</string>
 </resources>

@@ -20,12 +20,14 @@
 
         <ImageView
             android:id="@+id/imageViewBack"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:tint="@color/purple"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:focusable="true"
             android:clickable="true"
+            android:contentDescription="@string/go_back"
+            android:focusable="true"
+            android:padding="6dp"
+            android:tint="@color/purple"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
             app:layout_constraintTop_toTopOf="@+id/guideline11"
             app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
@@ -34,13 +36,14 @@
             android:id="@+id/textViewCreateAccountTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginStart="16dp"
             android:text="@string/create_account"
             android:textColor="@color/purple"
             android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewBack"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
-            app:layout_constraintStart_toStartOf="@+id/guideline12"
-            app:layout_constraintTop_toBottomOf="@+id/imageViewBack" />
+            app:layout_constraintStart_toEndOf="@+id/imageViewBack"
+            app:layout_constraintTop_toTopOf="@+id/guideline11" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textLayoutName"
@@ -49,21 +52,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:hint="@string/name"
-            app:boxStrokeColor="@color/blue"
+            app:boxStrokeColor="@color/purple"
             app:errorEnabled="true"
-            app:hintTextColor="@color/blue"
+            app:hintTextColor="@color/purple"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
             app:layout_constraintTop_toBottomOf="@+id/textViewCreateAccountTitle"
             app:startIconDrawable="@drawable/ic_person_black_24dp"
-            app:startIconTint="@color/blue">
+            app:startIconTint="@color/purple">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textEditName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:imeOptions="flagNoExtractUi"
                 android:lines="1"
                 android:maxLines="1" />
 
@@ -76,21 +80,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="@string/email_address"
-            app:boxStrokeColor="@color/blue"
+            app:boxStrokeColor="@color/purple"
             app:errorEnabled="true"
-            app:hintTextColor="@color/blue"
+            app:hintTextColor="@color/purple"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
             app:layout_constraintTop_toBottomOf="@+id/textLayoutName"
             app:startIconDrawable="@android:drawable/sym_action_email"
-            app:startIconTint="@color/blue">
+            app:startIconTint="@color/purple">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textEditEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:imeOptions="flagNoExtractUi"
                 android:lines="1"
                 android:maxLines="1" />
 
@@ -100,9 +105,8 @@
             android:id="@+id/checkboxAgree"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-light"
-            app:buttonTint="@color/blue"
+            app:buttonTint="@color/purple"
             app:layout_constraintEnd_toStartOf="@+id/guideline13"
             app:layout_constraintStart_toStartOf="@+id/guideline12"
             app:layout_constraintTop_toBottomOf="@+id/textLayoutEmail">
@@ -113,7 +117,7 @@
             android:id="@+id/buttonCreateAccount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/blue"
+            android:backgroundTint="@color/purple"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:text="@string/create_account"

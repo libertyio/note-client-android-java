@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import io.liberty.note.protocol.NoteList;
 import io.liberty.note.task.GetNoteTask;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
 
     private RecyclerView recyclerViewNotes;
     private RecyclerView.Adapter mAdapter;
@@ -143,5 +145,24 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public void showPopupMenu(View v) {
+        PopupMenu popupMenu = new PopupMenu(this, v);
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.inflate(R.menu.menu_home);
+        popupMenu.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_about:
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
+                return true;
+            default:
+                return false;
+        }
     }
 }

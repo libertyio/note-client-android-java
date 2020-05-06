@@ -38,6 +38,7 @@ public class LibertyNote extends Application implements LifecycleObserver {
     public EndpointConfiguration endpointConfiguration;
     final public static String PREFS_FILE = "login_preferences";
     private HttpAgent httpAgent;
+    private boolean isAuthenticated = false;
 
     public LibertyNote() {
         super();
@@ -65,6 +66,14 @@ public class LibertyNote extends Application implements LifecycleObserver {
 
     public HttpAgent getHttpAgent() {
         return httpAgent;
+    }
+
+    public boolean isAuthenticated() {
+        return isAuthenticated;
+    }
+
+    public void setAuthenticated(boolean value) {
+        isAuthenticated = value;
     }
 
     public CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest) throws IOException {

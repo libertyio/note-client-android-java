@@ -16,14 +16,28 @@
             android:id="@+id/searchBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:foregroundTint="@color/purple"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:focusable="true"
-            android:clickable="true"
-            app:layout_constraintEnd_toStartOf="@+id/guideline6"
-            app:layout_constraintHorizontal_bias="1.0"
+            android:foregroundTint="@color/purple"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewMenu"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline5"
             app:layout_constraintTop_toTopOf="@+id/guideline7" />
+
+        <ImageView
+            android:id="@+id/imageViewMenu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="6dp"
+            android:onClick="showPopupMenu"
+            android:contentDescription="@string/menu"
+            android:tint="@color/purple"
+            app:layout_constraintEnd_toStartOf="@+id/guideline6"
+            app:layout_constraintTop_toTopOf="@+id/guideline7"
+            app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -50,7 +64,8 @@
                 android:id="@+id/recyclerViewNotes"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical" >
+            </androidx.recyclerview.widget.RecyclerView>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

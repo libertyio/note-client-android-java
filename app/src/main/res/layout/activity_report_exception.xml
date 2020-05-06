@@ -13,12 +13,14 @@
 
     <ImageView
         android:id="@+id/imageViewBack"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:tint="@color/purple"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:focusable="true"
         android:clickable="true"
+        android:padding="6dp"
+        android:contentDescription="@string/go_back"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="@+id/guideline45"
         app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
@@ -27,6 +29,7 @@
         android:id="@+id/textViewReportExceptionTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="@string/situation_report"
         android:textColor="@color/purple"
         android:textSize="24sp"
